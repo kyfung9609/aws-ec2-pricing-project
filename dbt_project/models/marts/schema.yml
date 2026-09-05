@@ -1,0 +1,97 @@
+version: 2
+
+models:
+  - name: dim_instances
+    description: "Dimension table containing deduplicated AWS EC2 hardware specifications and categories."
+    columns:
+      - name: instance_sk
+        description: "Surrogate key for EC2 instance types (MD5 hash of lower/trimmed instance_type)."
+        tests:
+          - unique
+          - not_null
+      - name: instance_type
+        description: "AWS instance family and size."
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_locations
+    description: "Dimension table mapping AWS region codes to geographic country groupings."
+    columns:
+      - name: location_sk
+        description: "Surrogate key for AWS regions (MD5 hash of lower/trimmed region_code/location_name)."
+        tests:
+          - unique
+          - not_null
+      - name: region_code
+        description: "Standardized AWS region identifier (e.g., us-east-1)."
+        tests:
+          - not_null
+      - name: country
+        description: "High-level country classification (Canada, US, Others)."
+        tests:
+          - not_null
+
+  - name: fct_ec2_pricing
+    description: "Fact table containing hourly pricing metrics and calculated daily/monthly/annual costs connected to dimensions."
+    columns:
+      - name: sku_offerterm
+        description: "Natural key for each pricing line item (AWS SKU + OfferTermCode). Verified unique and not-null across all 130,441 rows in the current fct_ec2_pricing output, after int_price_outliers excludes statistically anomalous price rows."
+        tests:
+          - unique
+          - not_null
+      - name: instance_sk
+        description: "Foreign key referencing dim_instances."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_instances')
+                field: instance_sk
+      - name: location_sk
+        description: "Foreign key referencing dim_locations."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_locations')
+                field: location_sk
+      - name: price_per_hour
+        description: "Hourly unit cost."
+        tests:
+          - not_null
+      - name: operating_system
+        description: "Operating system for the instance offer."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['linux', 'windows']
+      - name: term_type
+        description: "AWS pricing term: OnDemand or Reserved."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['OnDemand', 'Reserved']
+      - name: license_model
+        description: "Licensing model applied to the offer."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['no license required', 'license included - infrastructure', 'bring your own license']
+      - name: pre_installed_sw
+        description: "Pre-installed software bundled with the offer."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['na', 'sql web', 'sql std', 'sql ent']
+      - name: lease_year
+        description: "Commitment length in years implied by the pricing term (0 = OnDemand, 1 = 1-Year Reserved, 3 = 3-Year Reserved). Downstream lease_year_label logic in Power BI assumes only these three values exist."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1, 3]

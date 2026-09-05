@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "aws_ec2_summary"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c9ff28fe-2f0c-495b-b72f-9009797780cb"
+  }
+}

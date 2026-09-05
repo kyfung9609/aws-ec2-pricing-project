@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: int_price_outliers
+    description: >
+      Intermediate model, 1:1 with stg_aws_ec2_pricing (no rows dropped here).
+      Adds price_outlier_group_median, price_outlier_ratio, and
+      is_price_outlier -- flags where a row's price_per_hour disagrees with
+      its peers (same instance_type/region/OS/tenancy/capacity_status/
+      term_type/purchase_option/lease_year/pre_installed_sw/license_model)
+      by more than the price_outlier_ratio var (default 3x). First found via
+      p5.4xlarge in us-east-1/Windows/OnDemand (a $0.70/hr row alongside the
+      correct $7/hr row) -- check data_exports/price_outlier_review.csv for
+      the current count and cases, since it will change as the underlying
+      Kaggle dataset is re-pulled. fct_ec2_pricing filters on
+      is_price_outlier = false.
+    columns:
+      - name: is_price_outlier
+        description: "True if price_per_hour is >3x or <1/3 of its group's median price (see price_outlier_ratio var)."

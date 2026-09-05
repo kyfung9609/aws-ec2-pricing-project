@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_aws_ec2_pricing
+    description: "Cleaned and standardized raw AWS EC2 pricing data."
+    columns:
+      - name: sku
+        description: "AWS SKU identifier."
+        tests:
+          - not_null
+      - name: price_per_hour
+        description: "Hourly price in USD."
+        tests:
+          - not_null

@@ -1,0 +1,64 @@
+# ==========================================
+# 1. Security & Credentials (Databricks Tokens)
+# ==========================================
+# Kaggle API credentials
+kaggle.json
+.kaggle/
+
+# Databricks & Environment Tokens
+.env
+*.key
+secrets/
+credentials.json
+profiles.yml
+
+# ==========================================
+# 2. Raw & Processed Data (keep large files out of Git)
+# ==========================================
+data/*
+
+# Regenerated dbt CSV exports — large, reproducible via `dbt build`.
+# All .parquet exports in this folder are kept trackable (portfolio sample + reproducibility).
+dbt_project/data_exports/*.csv
+
+# ==========================================
+# 3. Python Environment
+# ==========================================
+.venv/
+__pycache__/
+*.pyc
+
+# ==========================================
+# 4. Local DuckDB Warehouse Files
+# ==========================================
+*.duckdb
+dbt_project/dev.duckdb
+
+# ==========================================
+# 5. Logs
+# ==========================================
+logs/
+
+# ==========================================
+# 6. Local dev-only files (not part of the portfolio)
+# ==========================================
+run_dbt.bat
+
+# Editor-specific settings — personal, may contain local absolute paths
+.vscode/
+
+
+# Ignore Power BI user-specific cache files
+*.abf
+*.vpa
+*.tmp
+.mru/
+
+# Compiled Power BI binary — the .pbip/Report/SemanticModel folders are the source of truth
+pbip/*.pbix
+
+# ==========================================
+# 7. Superseded screenshots (kept locally, not part of the published README)
+# ==========================================
+images/licensing-ri-matrix.png
+images/licensing-ri-matrix-x2iedn.png

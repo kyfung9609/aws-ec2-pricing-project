@@ -1,0 +1,43 @@
+name: 'aws_ec2_pricing_project'
+version: '1.0.0'
+config-version: 2
+
+# Connects to your target profile in ~/.dbt/profiles.yml
+profile: 'aws_ec2_pricing_project'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Materialization configurations
+models:
+  aws_ec2_pricing_project:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+# Post-hook execution: Automatically export marts models to Parquet
+#                        after dbt run completes
+on-run-end:
+# CSV Exports
+#- "copy (select * from {{ ref('dim_instances') }}) to 'data_exports/dim_instances.csv' (header, delimiter ',')"
+#- "copy (select * from {{ ref('dim_locations') }}) to 'data_exports/dim_locations.csv' (header, delimiter ',')"
+#- "copy (select * from {{ ref('fct_ec2_pricing') }}) to 'data_exports/fct_ec2_pricing.csv' (header, delimiter ',')"
+#- "copy (select * from {{ ref('int_price_outliers') }}) to 'data_exports/int_price_outliers.csv' (header, delimiter ',')"
+
+
+# Additional Parquet Exports
+- "copy (select * from {{ ref('dim_instances') }}) to 'data_exports/dim_instances.parquet' (format parquet)"
+- "copy (select * from {{ ref('dim_locations') }}) to 'data_exports/dim_locations.parquet' (format parquet)"
+- "copy (select * from {{ ref('fct_ec2_pricing') }}) to 'data_exports/fct_ec2_pricing.parquet' (format parquet)"
+- "copy (select * from {{ ref('int_price_outliers') }}) to 'data_exports/int_price_outliers.parquet' (format parquet)"
