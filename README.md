@@ -1,5 +1,7 @@
 # AWS EC2 Pricing Analysis — A Cost-Decision-Support Dashboard
 
+**GitHub repository:** [github.com/kyfung9609/aws-ec2-pricing-project](https://github.com/kyfung9609/aws-ec2-pricing-project)
+
 A dbt + Power BI project that turns AWS's raw EC2 pricing feed into a structured warehouse and an interactive report for evaluating instance, OS, and licensing cost trade-offs.
 
 ## 1. Abstract
